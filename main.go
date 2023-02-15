@@ -8,7 +8,7 @@ import (
     "github.com/leaf-node/lets-make-salad/maps"
 )
 
-var gridSize = 79
+var gridSize = 39
 
 func main() {
 

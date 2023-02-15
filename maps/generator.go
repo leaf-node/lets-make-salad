@@ -23,7 +23,8 @@ func GenerateMap(seed string, gridSize int) {
     for i := 0; i < gridSize; i++ {
         for j := 0; j < gridSize; j++ {
 
-            print(generateTile(j, i, gridScale))
+            tile := generateTile(j, i, gridScale)
+            print(tile, tile)
         }
         fmt.Println()
     }
