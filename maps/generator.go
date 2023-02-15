@@ -11,46 +11,81 @@ import (
     "github.com/ojrac/opensimplex-go"
 )
 
-var gridScale float64 = 0.1
-var noise opensimplex.Noise
 
-func GenerateMap(seed string, gridSize int) {
+type tileMap struct {
+    array []byte
+    width int
+    height int
+    noiseScale float64
+    noise opensimplex.Noise
+}
+
+
+func newEmptyMap(width int, height int, noiseScale float64) tileMap {
+    array := make([]byte, width * height)
+    return tileMap{array, width, height, noiseScale, nil}
+}
+
+func GenerateMap(seed string, gridSize int, noiseScale float64) tileMap {
 
     hash := sha1.Sum([]byte(seed))
     seedInt := int64(binary.BigEndian.Uint64(hash[12:]))
 
-    noise = opensimplex.New(seedInt)
+    tiles := newEmptyMap(gridSize, gridSize, noiseScale)
+    tiles.noise = opensimplex.New(seedInt)
 
-    for i := 0; i < gridSize; i++ {
-        for j := 0; j < gridSize; j++ {
+    for y := 0; y < tiles.height; y++ {
+        for x := 0; x < tiles.width; x++ {
+            tiles.generateTile(x, y)
+        }
+    }
 
-            tile := generateTile(j, i, gridScale)
+    return tiles
+}
+
+func (t tileMap) PrintMap() {
+    for y := t.height - 1; y >= 0; y-- {
+        for x := 0; x < t.width; x++ {
+
+            tile := t.getTile(x, y)
             print(tile, tile)
         }
         fmt.Println()
     }
 }
 
-func generateTile(j int, i int, scale float64) string {
+func (t tileMap) generateTile(x int, y int) {
 
-    height := math.Sqrt(sampleNoise(j, i, scale))
-    height *= math.Sqrt(sampleNoise(-j, -i, scale * 3))
+    var tileStr string
+
+    height := math.Sqrt(t.sampleNoise(x, y, t.noiseScale))
+    height *= math.Sqrt(t.sampleNoise(-x, -y, t.noiseScale * 3))
 
     if height <= 0.35 {
-        return ":" // swamp
+        tileStr = ":" // swamp
     } else if height < 0.60 {
-        return "." // land
+        tileStr = "." // land
     } else if height < 0.65 {
-        return "r" // rocky land
+        tileStr = "r" // rocky land
     } else {
-        return "M" // rock
+        tileStr = "R" // rock
     }
+
+    t.setTile(x, y, []byte(tileStr)[0])
 }
 
-func sampleNoise(i int, j int, scale float64) float64 {
+func (t tileMap) sampleNoise(x int, y int, scale float64) float64 {
 
-    value := noise.Eval2(float64(j) * scale, float64(i) * scale)
+    value := t.noise.Eval2(float64(x) * scale, float64(y) * scale)
     normalized := (value + 1) / 2
     return normalized
+}
+
+func (t tileMap) setTile(x int, y int, tile byte) {
+    t.array[y* t.width + x] = tile
+}
+
+func (t tileMap) getTile(x int, y int) string {
+    return string(t.array[y* t.width + x])
 }
 

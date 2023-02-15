@@ -9,13 +9,16 @@ import (
 )
 
 var gridSize = 39
+var noiseScale = 0.1
 
 func main() {
 
     if len(os.Args) != 2 {
         fmt.Fprintf(os.Stderr, "lets-make-salad takes one arbitrary seed argument.\n")
+
     } else {
-        maps.GenerateMap(os.Args[1], gridSize)
+        tiles := maps.GenerateMap(os.Args[1], gridSize, noiseScale)
+        tiles.PrintMap()
     }
 }
 
