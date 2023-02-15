@@ -4,6 +4,7 @@ package maps
 
 import (
     "fmt"
+    "math"
     "crypto/sha1"
     "encoding/binary"
 
@@ -32,14 +33,15 @@ func GenerateMap(seed string, gridSize int) {
 
 func generateTile(j int, i int, scale float64) string {
 
-    height := sampleNoise(j, i, scale)
+    height := math.Sqrt(sampleNoise(j, i, scale))
+    height *= math.Sqrt(sampleNoise(-j, -i, scale * 3))
 
-    if height <= 0.25 {
-        return "~"
-    } else if height < 0.75 {
-        return "."
+    if height <= 0.35 {
+        return ":" // swamp
+    } else if height < 0.65 {
+        return "." // land
     } else {
-        return "M"
+        return "M" // rock
     }
 }
 
