@@ -38,8 +38,10 @@ func generateTile(j int, i int, scale float64) string {
 
     if height <= 0.35 {
         return ":" // swamp
-    } else if height < 0.65 {
+    } else if height < 0.60 {
         return "." // land
+    } else if height < 0.65 {
+        return "r" // rocky land
     } else {
         return "M" // rock
     }
