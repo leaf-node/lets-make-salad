@@ -21,12 +21,12 @@ type tileMap struct {
 }
 
 
-func newEmptyMap(width int, height int, noiseScale float64) tileMap {
+func newEmptyMap(width int, height int, noiseScale float64) *tileMap {
     array := make([]byte, width * height)
-    return tileMap{array, width, height, noiseScale, nil}
+    return &tileMap{array, width, height, noiseScale, nil}
 }
 
-func GenerateMap(seed string, gridSize int, noiseScale float64) tileMap {
+func GenerateMap(seed string, gridSize int, noiseScale float64) *tileMap {
 
     hash := sha1.Sum([]byte(seed))
     seedInt := int64(binary.BigEndian.Uint64(hash[12:]))
