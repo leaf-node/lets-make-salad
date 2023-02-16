@@ -4,7 +4,6 @@ package maps
 
 import (
     "fmt"
-    "math"
     "crypto/sha1"
     "encoding/binary"
 
@@ -58,14 +57,14 @@ func (t tileMap) generateTile(x int, y int) {
 
     var tileStr string
 
-    height := math.Sqrt(t.sampleNoise(x, y, t.noiseScale))
-    height *= math.Sqrt(t.sampleNoise(-x, -y, t.noiseScale * 3))
+    height := t.sampleNoise(x, y, t.noiseScale)
+    height *= t.sampleNoise(-x, -y, t.noiseScale * 3)
 
-    if height <= 0.35 {
+    if height <= 0.12 {
         tileStr = ":" // swamp
-    } else if height < 0.60 {
+    } else if height < 0.36 {
         tileStr = "." // land
-    } else if height < 0.65 {
+    } else if height < 0.42 {
         tileStr = "r" // rocky land
     } else {
         tileStr = "R" // rock
