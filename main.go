@@ -29,11 +29,11 @@ func main() {
 
 func startLoop (world *game.World) {
 
-    assets := draw.Init()
+    draw.Init()
 
     for !rl.WindowShouldClose() {
         game.Update(world)
-        draw.Draw(world, assets)
+        draw.Draw(world,)
     }
 
     rl.CloseWindow()

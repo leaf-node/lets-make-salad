@@ -9,6 +9,7 @@ import (
 )
 
 var spriteSize = int32(16)
+var as assets
 
 
 type assets struct {
@@ -19,18 +20,16 @@ type assets struct {
     dirt rl.Texture2D
 }
 
-func Init() assets {
+func Init() {
 
     rl.InitWindow(1280, 640, "Let's Make Salad!")
     rl.SetTargetFPS(60)
 
-    as := assets{}
+    as = assets{}
     as.load()
-
-    return as
 }
 
-func Draw(world *game.World, as assets) {
+func Draw(world *game.World) {
 
     rl.BeginDrawing()
     rl.ClearBackground(rl.Black)
