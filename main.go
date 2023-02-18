@@ -12,7 +12,7 @@ import (
     "github.com/leaf-node/lets-make-salad/src/draw"
 )
 
-var gridSize = 39
+var gridSize = 250
 var noiseScale = 0.1
 
 
