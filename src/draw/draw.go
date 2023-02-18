@@ -42,6 +42,8 @@ func Draw(world *game.World) {
     for x := int32(0); x < width ; x++ {
         for y := int32(0); y < height ; y++ {
 
+            var tex rl.Texture2D
+
             tile := world.Tiles.GetTile(int(x), int(y))
 
             x1 := x * spriteSize
@@ -49,16 +51,18 @@ func Draw(world *game.World) {
 
             switch tile {
             case "R":
-                rl.DrawTexture(as.rock, x1, y1, tint)
+                tex = as.rock
             case "r":
-                rl.DrawTexture(as.stones, x1, y1, tint)
+                tex = as.stones
             case ".":
-                rl.DrawTexture(as.grass, x1, y1, tint)
+                tex = as.grass
             case ":":
-                rl.DrawTexture(as.swamp, x1, y1, tint)
+                tex = as.swamp
             default:
-                rl.DrawTexture(as.dirt, x1, y1, tint)
+                tex = as.dirt
             }
+
+            rl.DrawTexture(tex, x1, y1, tint)
         }
     }
 
