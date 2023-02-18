@@ -3,14 +3,23 @@
 package loop
 
 import (
-
-    "github.com/leaf-node/lets-make-salad/src/maps"
+    "github.com/leaf-node/lets-make-salad/src/game"
 )
 
 
-func StartLoop (seed string, gridSize int, noiseScale float64) {
+func update(world *game.World) {
 
-    tiles := maps.GenerateMap(seed, gridSize, noiseScale)
-    tiles.PrintMap()
+}
+
+func draw(world *game.World) {
+
+    world.Tiles.PrintMap()
+}
+
+func StartLoop (world *game.World) {
+
+    update(world)
+    draw(world)
+
 }
 

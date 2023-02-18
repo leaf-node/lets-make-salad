@@ -6,7 +6,9 @@ import (
     "os"
     "log"
 
+    "github.com/leaf-node/lets-make-salad/src/game"
     "github.com/leaf-node/lets-make-salad/src/loop"
+
 )
 
 var gridSize = 39
@@ -19,6 +21,8 @@ func main() {
         log.Fatal("lets-make-salad takes one arbitrary seed argument.\n")
     }
 
-    loop.StartLoop(os.Args[1], gridSize, noiseScale)
+    world := game.Init(os.Args[1], gridSize, noiseScale)
+
+    loop.StartLoop(world)
 }
 

@@ -11,7 +11,7 @@ import (
 )
 
 
-type tileMap struct {
+type TileMap struct {
     array []byte
     width int
     height int
@@ -20,12 +20,12 @@ type tileMap struct {
 }
 
 
-func newEmptyMap(width int, height int, noiseScale float64) *tileMap {
+func newEmptyMap(width int, height int, noiseScale float64) *TileMap {
     array := make([]byte, width * height)
-    return &tileMap{array, width, height, noiseScale, nil}
+    return &TileMap{array, width, height, noiseScale, nil}
 }
 
-func GenerateMap(seed string, gridSize int, noiseScale float64) *tileMap {
+func GenerateMap(seed string, gridSize int, noiseScale float64) *TileMap {
 
     hash := sha1.Sum([]byte(seed))
     seedInt := int64(binary.BigEndian.Uint64(hash[12:]))
@@ -42,7 +42,7 @@ func GenerateMap(seed string, gridSize int, noiseScale float64) *tileMap {
     return tiles
 }
 
-func (t tileMap) PrintMap() {
+func (t TileMap) PrintMap() {
     for y := t.height - 1; y >= 0; y-- {
         for x := 0; x < t.width; x++ {
 
@@ -53,7 +53,7 @@ func (t tileMap) PrintMap() {
     }
 }
 
-func (t tileMap) generateTile(x int, y int) {
+func (t TileMap) generateTile(x int, y int) {
 
     var tileStr string
 
@@ -73,18 +73,18 @@ func (t tileMap) generateTile(x int, y int) {
     t.setTile(x, y, []byte(tileStr)[0])
 }
 
-func (t tileMap) sampleNoise(x int, y int, scale float64) float64 {
+func (t TileMap) sampleNoise(x int, y int, scale float64) float64 {
 
     value := t.noise.Eval2(float64(x) * scale, float64(y) * scale)
     normalized := (value + 1) / 2
     return normalized
 }
 
-func (t tileMap) setTile(x int, y int, tile byte) {
+func (t TileMap) setTile(x int, y int, tile byte) {
     t.array[y* t.width + x] = tile
 }
 
-func (t tileMap) getTile(x int, y int) string {
+func (t TileMap) getTile(x int, y int) string {
     return string(t.array[y* t.width + x])
 }
 
