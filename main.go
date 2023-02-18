@@ -7,7 +7,7 @@ import (
     "log"
 
     "github.com/leaf-node/lets-make-salad/src/game"
-    "github.com/leaf-node/lets-make-salad/src/loop"
+    "github.com/leaf-node/lets-make-salad/src/draw"
 
 )
 
@@ -23,6 +23,13 @@ func main() {
 
     world := game.Init(os.Args[1], gridSize, noiseScale)
 
-    loop.StartLoop(world)
+    startLoop(world)
+}
+
+func startLoop (world *game.World) {
+
+    game.Update(world)
+    draw.Draw(world)
+
 }
 

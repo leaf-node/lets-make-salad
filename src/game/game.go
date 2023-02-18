@@ -19,3 +19,9 @@ func Init (seed string, gridSize int, noiseScale float64) *World {
     return world
 }
 
+func Update(world *World) {
+
+    // todo
+
+}
+
