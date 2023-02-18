@@ -18,11 +18,18 @@ var noiseScale = 0.1
 
 func main() {
 
-    if len(os.Args) != 2 {
-        log.Fatal("lets-make-salad takes one arbitrary seed argument.\n")
+    if len(os.Args) > 2 {
+        log.Fatal("lets-make-salad takes one optional, arbitrary seed argument.\n")
     }
 
-    world := game.Init(os.Args[1], gridSize, noiseScale)
+    var seed string
+    if len(os.Args) == 2 {
+        seed = os.Args[1]
+    } else {
+        seed = "letsmakesalad"
+    }
+
+    world := game.Init(seed, gridSize, noiseScale)
 
     startLoop(world)
 }
