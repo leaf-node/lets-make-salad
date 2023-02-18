@@ -13,8 +13,8 @@ import (
 
 type TileMap struct {
     array []byte
-    width int
-    height int
+    Width int
+    Height int
     noiseScale float64
     noise opensimplex.Noise
 }
@@ -33,8 +33,8 @@ func GenerateMap(seed string, gridSize int, noiseScale float64) *TileMap {
     tiles := newEmptyMap(gridSize, gridSize, noiseScale)
     tiles.noise = opensimplex.New(seedInt)
 
-    for y := 0; y < tiles.height; y++ {
-        for x := 0; x < tiles.width; x++ {
+    for y := 0; y < tiles.Height; y++ {
+        for x := 0; x < tiles.Width; x++ {
             tiles.generateTile(x, y)
         }
     }
@@ -42,11 +42,11 @@ func GenerateMap(seed string, gridSize int, noiseScale float64) *TileMap {
     return tiles
 }
 
-func (t TileMap) PrintMap() {
-    for y := t.height - 1; y >= 0; y-- {
-        for x := 0; x < t.width; x++ {
+func (t TileMap) DebugPrintMap() {
+    for y := t.Height - 1; y >= 0; y-- {
+        for x := 0; x < t.Width; x++ {
 
-            tile := t.getTile(x, y)
+            tile := t.GetTile(x, y)
             print(tile, tile)
         }
         fmt.Println()
@@ -81,10 +81,10 @@ func (t TileMap) sampleNoise(x int, y int, scale float64) float64 {
 }
 
 func (t TileMap) setTile(x int, y int, tile byte) {
-    t.array[y* t.width + x] = tile
+    t.array[y* t.Width + x] = tile
 }
 
-func (t TileMap) getTile(x int, y int) string {
-    return string(t.array[y* t.width + x])
+func (t TileMap) GetTile(x int, y int) string {
+    return string(t.array[y* t.Width + x])
 }
 

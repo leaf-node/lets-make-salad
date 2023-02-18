@@ -6,9 +6,10 @@ import (
     "os"
     "log"
 
+    "github.com/gen2brain/raylib-go/raylib"
+
     "github.com/leaf-node/lets-make-salad/src/game"
     "github.com/leaf-node/lets-make-salad/src/draw"
-
 )
 
 var gridSize = 39
@@ -28,8 +29,13 @@ func main() {
 
 func startLoop (world *game.World) {
 
-    game.Update(world)
-    draw.Draw(world)
+    assets := draw.Init()
 
+    for !rl.WindowShouldClose() {
+        game.Update(world)
+        draw.Draw(world, assets)
+    }
+
+    rl.CloseWindow()
 }
 
