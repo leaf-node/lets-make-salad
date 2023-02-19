@@ -175,7 +175,7 @@ func accelerateViewport() {
         View.VelX -= accel
     } else if goRight && !goLeft && util.Sign(View.VelX) != -1 {
         View.VelX += accel
-    } else {
+    } else if View.VelX != 0 {
 
         // decelerate quickly
         oldSign := util.Sign(View.VelX)
@@ -190,7 +190,7 @@ func accelerateViewport() {
         View.VelY -= accel
     } else if goUp && !goDown && util.Sign(View.VelY) != -1 {
         View.VelY += accel
-    } else {
+    } else if View.VelY != 0 {
 
         // decelerate quickly
         oldSign := util.Sign(View.VelY)
