@@ -10,6 +10,7 @@ import (
 
     "github.com/leaf-node/lets-make-salad/src/game"
     "github.com/leaf-node/lets-make-salad/src/draw"
+    "github.com/leaf-node/lets-make-salad/src/input"
 )
 
 var gridSize = int32(250)
@@ -40,6 +41,7 @@ func startLoop (world *game.World) {
     draw.Init(width, height, gridSize, gridSize)
 
     for !rl.WindowShouldClose() {
+        input.HandleInput()
         game.Update(world)
         draw.Draw(world)
     }

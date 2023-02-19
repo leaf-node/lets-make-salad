@@ -44,6 +44,8 @@ func Init(width int32, height int32, mapWidth int32, mapHeight int32) {
     rl.InitWindow(width, height, "Let's Make Salad!")
     rl.SetTargetFPS(60)
 
+    rl.SetWindowState(rl.FlagWindowResizable)
+
     as = assets{}
     as.load()
 
@@ -59,7 +61,7 @@ func Init(width int32, height int32, mapWidth int32, mapHeight int32) {
 
 func Draw(world *game.World) {
 
-    accelerateViewport()
+    handleWindowResize()
     moveViewport()
 
     tint := rl.White
@@ -71,8 +73,8 @@ func Draw(world *game.World) {
 
     bottomX := int32(math.Floor(float64(View.X)))
     bottomY := int32(math.Floor(float64(View.Y)))
-    topX := View.ScreenWidth / View.TileSize + bottomX
-    topY := View.ScreenHeight / View.TileSize + bottomY
+    topX := View.ScreenWidth / View.TileSize + bottomX + 1
+    topY := View.ScreenHeight / View.TileSize + bottomY + 1
 
     source := rl.Rectangle{float32(0), float32(0), float32(as.size), float32(as.size)}
     origin := rl.Vector2{0, 0}
@@ -158,19 +160,9 @@ func moveViewport() {
     View.Y = util.ClampF32(View.Y, 0, topmost)
 }
 
-func accelerateViewport() {
+func AccelerateViewport(goLeft, goRight, goUp, goDown bool) {
 
     accel := float32(0.03)
-
-    goLeft := false
-    goRight := false
-    goUp := false
-    goDown := false
-
-    if rl.IsKeyDown(rl.KeyLeft)  { goLeft = true }
-    if rl.IsKeyDown(rl.KeyRight) { goRight = true }
-    if rl.IsKeyDown(rl.KeyUp)    { goUp = true }
-    if rl.IsKeyDown(rl.KeyDown)  { goDown = true }
 
     if goLeft && ! goRight && util.Sign(View.VelX) != 1 {
         View.VelX -= accel
@@ -202,3 +194,38 @@ func accelerateViewport() {
         View.VelY = newVel
     }
 }
+
+func ResizeWindow(fullscreen bool, maximized bool) {
+
+    isfs := rl.IsWindowFullscreen()
+
+    if fullscreen {
+        if !isfs {
+            rl.ToggleFullscreen()
+        }
+    } else {
+        if isfs { rl.ToggleFullscreen() }
+
+        if maximized {
+            rl.MaximizeWindow()
+        } else {
+            rl.RestoreWindow()
+        }
+    }
+}
+
+func handleWindowResize() {
+
+    if rl.IsWindowResized() {
+
+        View.ScreenWidth = int32(rl.GetScreenWidth())
+        View.ScreenHeight = int32(rl.GetScreenHeight())
+
+    } else if rl.IsWindowFullscreen() {
+
+        monitor := rl.GetCurrentMonitor()
+        View.ScreenWidth = int32(rl.GetMonitorWidth(monitor))
+        View.ScreenHeight = int32(rl.GetMonitorHeight(monitor))
+    }
+}
+
