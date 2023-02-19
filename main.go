@@ -14,7 +14,7 @@ import (
 
 var gridSize = int32(250)
 var noiseScale = 0.1
-var height = int32(720)
+var height = int32(704)
 var width = int32(1280)
 
 func main() {
