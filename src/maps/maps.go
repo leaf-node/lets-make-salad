@@ -60,8 +60,10 @@ func (t TileMap) generateTile(x, y int32) {
     height := t.sampleNoise(x, y, t.noiseScale)
     height *= t.sampleNoise(-x, -y, t.noiseScale * 3)
 
-    if height <= 0.12 {
+    if height <= 0.05 {
         tileStr = ":" // swamp
+    } else if height <= 0.12 {
+        tileStr = "T" // tree
     } else if height < 0.36 {
         tileStr = "." // land
     } else if height < 0.42 {

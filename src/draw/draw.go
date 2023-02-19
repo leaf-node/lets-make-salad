@@ -32,6 +32,9 @@ type assets struct {
     grass rl.Texture2D
     swamp rl.Texture2D
     dirt rl.Texture2D
+    tree rl.Texture2D
+    wood rl.Texture2D
+    stoneBricks rl.Texture2D
 }
 
 func Init(width int32, height int32, mapWidth int32, mapHeight int32) {
@@ -92,6 +95,8 @@ func Draw(world *game.World) {
                 tex = as.stones
             case ".":
                 tex = as.grass
+            case "T":
+                tex = as.tree
             case ":":
                 tex = as.swamp
             case " ":
@@ -121,6 +126,9 @@ func (as *assets) load() {
     as.grass = rl.LoadTexture("img/grass.png")
     as.swamp = rl.LoadTexture("img/swamp.png")
     as.dirt = rl.LoadTexture("img/dirt.png")
+    as.tree = rl.LoadTexture("img/tree.png")
+    as.wood = rl.LoadTexture("img/wood.png")
+    as.stoneBricks = rl.LoadTexture("img/stoneBricks.png")
 }
 
 func (as *assets) unload() {
@@ -130,5 +138,8 @@ func (as *assets) unload() {
     rl.UnloadTexture(as.grass)
     rl.UnloadTexture(as.swamp)
     rl.UnloadTexture(as.dirt)
+    rl.UnloadTexture(as.tree)
+    rl.UnloadTexture(as.wood)
+    rl.UnloadTexture(as.stoneBricks)
 }
 
