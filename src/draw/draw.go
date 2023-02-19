@@ -32,6 +32,8 @@ type assets struct {
 
 func Init(width int32, height int32, mapWidth int32, mapHeight int32) {
 
+    rl.SetTraceLog(rl.LogWarning)
+
     rl.InitWindow(width, height, "Let's Make Salad!")
     rl.SetTargetFPS(60)
 
