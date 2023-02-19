@@ -14,7 +14,8 @@ import (
 
 var gridSize = 250
 var noiseScale = 0.1
-
+var height = int32(720)
+var width = int32(1280)
 
 func main() {
 
@@ -36,11 +37,11 @@ func main() {
 
 func startLoop (world *game.World) {
 
-    draw.Init()
+    draw.Init(width, height)
 
     for !rl.WindowShouldClose() {
         game.Update(world)
-        draw.Draw(world,)
+        draw.Draw(world)
     }
 
     rl.CloseWindow()

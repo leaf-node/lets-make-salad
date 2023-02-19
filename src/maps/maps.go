@@ -85,6 +85,9 @@ func (t TileMap) setTile(x int, y int, tile byte) {
 }
 
 func (t TileMap) GetTile(x int, y int) string {
+    if x < 0 || y < 0 || x >= t.Width || y >= t.Height {
+        return " "
+    }
     return string(t.array[y* t.Width + x])
 }
 

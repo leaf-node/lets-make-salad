@@ -9,12 +9,14 @@ import (
 )
 
 var as assets
-var view viewport
+var View viewport
 
 type viewport struct {
-    x int32
-    y int32
-    gridSize int32
+    X int32
+    Y int32
+    GridSize int32
+    ScreenWidth int32
+    ScreenHeight int32
 }
 
 type assets struct {
@@ -26,15 +28,17 @@ type assets struct {
     dirt rl.Texture2D
 }
 
-func Init() {
+func Init(width int32, height int32) {
 
-    rl.InitWindow(1280, 640, "Let's Make Salad!")
+    rl.InitWindow(width, height, "Let's Make Salad!")
     rl.SetTargetFPS(60)
 
     as = assets{}
     as.load()
 
-    view.gridSize = 32
+    View.GridSize = 32
+    View.ScreenWidth = width
+    View.ScreenHeight = height
 }
 
 func Draw(world *game.World) {
@@ -42,13 +46,10 @@ func Draw(world *game.World) {
     rl.BeginDrawing()
     rl.ClearBackground(rl.Black)
 
-    height := int32(world.Tiles.Height)
-    width := int32(world.Tiles.Width)
-
     tint := rl.White
 
-    for x := int32(0); x < width ; x++ {
-        for y := int32(0); y < height ; y++ {
+    for x := View.X ; x <= View.X + View.ScreenWidth / View.GridSize ; x++ {
+        for y := View.Y ; y <= View.Y + View.ScreenHeight / View.GridSize ; y++ {
 
             var tex rl.Texture2D
 
@@ -63,14 +64,16 @@ func Draw(world *game.World) {
                 tex = as.grass
             case ":":
                 tex = as.swamp
+            case " ":
+                continue
             default:
                 tex = as.dirt
             }
 
-            gs := view.gridSize
+            gs := View.GridSize
 
             source := rl.Rectangle{float32(0), float32(0), float32(as.size), float32(as.size)}
-            dest := rl.Rectangle{float32(x * gs), float32(y * gs), float32(gs), float32(gs)}
+            dest := rl.Rectangle{float32(x * gs), float32(View.ScreenHeight - ((y + 1) * gs)), float32(gs), float32(gs)}
 
             origin := rl.Vector2{0, 0}
             rotation := float32(0)
