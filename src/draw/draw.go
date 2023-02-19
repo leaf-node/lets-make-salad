@@ -171,12 +171,13 @@ func accelerateViewport() {
     if rl.IsKeyDown(rl.KeyUp)    { goUp = true }
     if rl.IsKeyDown(rl.KeyDown)  { goDown = true }
 
-    if goLeft && ! goRight {
+    if goLeft && ! goRight && util.Sign(View.VelX) != 1 {
         View.VelX -= accel
-    } else if goRight && !goLeft {
+    } else if goRight && !goLeft && util.Sign(View.VelX) != -1 {
         View.VelX += accel
     } else {
 
+        // decelerate quickly
         oldSign := util.Sign(View.VelX)
         newVel := View.VelX - oldSign * 3 * accel
         if util.Sign(newVel) != oldSign {
@@ -185,12 +186,13 @@ func accelerateViewport() {
         View.VelX = newVel
     }
 
-    if goDown && !goUp {
+    if goDown && !goUp && util.Sign(View.VelY) != 1 {
         View.VelY -= accel
-    } else if goUp && !goDown {
+    } else if goUp && !goDown && util.Sign(View.VelY) != -1 {
         View.VelY += accel
     } else {
 
+        // decelerate quickly
         oldSign := util.Sign(View.VelY)
         newVel := View.VelY - oldSign * 3 * accel
         if util.Sign(newVel) != oldSign {
