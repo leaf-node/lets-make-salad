@@ -8,11 +8,17 @@ import (
     "github.com/leaf-node/lets-make-salad/src/game"
 )
 
-var spriteSize = int32(16)
 var as assets
+var view viewport
 
+type viewport struct {
+    x int32
+    y int32
+    gridSize int32
+}
 
 type assets struct {
+    size int32
     rock rl.Texture2D
     stones rl.Texture2D
     grass rl.Texture2D
@@ -27,6 +33,8 @@ func Init() {
 
     as = assets{}
     as.load()
+
+    view.gridSize = 32
 }
 
 func Draw(world *game.World) {
@@ -46,9 +54,6 @@ func Draw(world *game.World) {
 
             tile := world.Tiles.GetTile(int(x), int(y))
 
-            x1 := x * spriteSize
-            y1 := y * spriteSize
-
             switch tile {
             case "R":
                 tex = as.rock
@@ -62,7 +67,15 @@ func Draw(world *game.World) {
                 tex = as.dirt
             }
 
-            rl.DrawTexture(tex, x1, y1, tint)
+            gs := view.gridSize
+
+            source := rl.Rectangle{float32(0), float32(0), float32(as.size), float32(as.size)}
+            dest := rl.Rectangle{float32(x * gs), float32(y * gs), float32(gs), float32(gs)}
+
+            origin := rl.Vector2{0, 0}
+            rotation := float32(0)
+
+            rl.DrawTexturePro(tex, source, dest, origin, rotation, tint)
         }
     }
 
@@ -70,6 +83,8 @@ func Draw(world *game.World) {
 }
 
 func (as *assets) load() {
+
+    as.size = 16
 
     as.rock = rl.LoadTexture("img/rock.png")
     as.stones = rl.LoadTexture("img/stones.png")
