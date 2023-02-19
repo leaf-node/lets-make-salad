@@ -12,7 +12,7 @@ import (
     "github.com/leaf-node/lets-make-salad/src/draw"
 )
 
-var gridSize = 250
+var gridSize = int32(250)
 var noiseScale = 0.1
 var height = int32(720)
 var width = int32(1280)
@@ -30,14 +30,14 @@ func main() {
         seed = "letsmakesalad"
     }
 
-    world := game.Init(seed, gridSize, noiseScale)
+    world := game.Init(seed, int(gridSize), noiseScale)
 
     startLoop(world)
 }
 
 func startLoop (world *game.World) {
 
-    draw.Init(width, height)
+    draw.Init(width, height, gridSize, gridSize)
 
     for !rl.WindowShouldClose() {
         handleInput()

@@ -14,9 +14,11 @@ var View viewport
 type viewport struct {
     X int32
     Y int32
-    GridSize int32
+    TileSize int32
     ScreenWidth int32
     ScreenHeight int32
+    mapWidth int32
+    mapHeight int32
 }
 
 type assets struct {
@@ -28,7 +30,7 @@ type assets struct {
     dirt rl.Texture2D
 }
 
-func Init(width int32, height int32) {
+func Init(width int32, height int32, mapWidth int32, mapHeight int32) {
 
     rl.InitWindow(width, height, "Let's Make Salad!")
     rl.SetTargetFPS(60)
@@ -36,20 +38,24 @@ func Init(width int32, height int32) {
     as = assets{}
     as.load()
 
-    View.GridSize = 32
+    View.TileSize = 32
     View.ScreenWidth = width
     View.ScreenHeight = height
+    View.mapWidth = mapWidth
+    View.mapHeight = mapHeight
 }
 
 func Draw(world *game.World) {
 
-    rl.BeginDrawing()
-    rl.ClearBackground(rl.Black)
+    clampViewport()
 
     tint := rl.White
 
-    for x := View.X ; x <= View.ScreenWidth / View.GridSize + View.X ; x++ {
-        for y := View.Y ; y <= View.ScreenHeight / View.GridSize + View.Y ; y++ {
+    rl.BeginDrawing()
+    rl.ClearBackground(rl.Black)
+
+    for x := View.X ; x <= View.ScreenWidth / View.TileSize + View.X ; x++ {
+        for y := View.Y ; y <= View.ScreenHeight / View.TileSize + View.Y ; y++ {
 
             var tex rl.Texture2D
 
@@ -70,7 +76,7 @@ func Draw(world *game.World) {
                 tex = as.dirt
             }
 
-            gs := View.GridSize
+            gs := View.TileSize
 
             source := rl.Rectangle{float32(0), float32(0), float32(as.size), float32(as.size)}
             dest := rl.Rectangle{float32((x - View.X) * gs), float32(View.ScreenHeight - ((y - View.Y + 1) * gs)), float32(gs), float32(gs)}
@@ -105,3 +111,14 @@ func (as *assets) unload() {
     rl.UnloadTexture(as.dirt)
 }
 
+func clampViewport() {
+
+    topmostPos := View.mapHeight - View.ScreenHeight / View.TileSize
+    rightmostPos := View.mapWidth - View.ScreenWidth / View.TileSize
+
+    if View.X < 0 { View.X = 0 }
+    if View.Y < 0 { View.Y = 0 }
+
+    if View.X > rightmostPos { View.X = rightmostPos }
+    if View.Y > topmostPos { View.Y = topmostPos }
+}
