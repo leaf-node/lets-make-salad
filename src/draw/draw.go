@@ -48,8 +48,8 @@ func Draw(world *game.World) {
 
     tint := rl.White
 
-    for x := View.X ; x <= View.X + View.ScreenWidth / View.GridSize ; x++ {
-        for y := View.Y ; y <= View.Y + View.ScreenHeight / View.GridSize ; y++ {
+    for x := View.X ; x <= View.ScreenWidth / View.GridSize + View.X ; x++ {
+        for y := View.Y ; y <= View.ScreenHeight / View.GridSize + View.Y ; y++ {
 
             var tex rl.Texture2D
 
@@ -73,7 +73,7 @@ func Draw(world *game.World) {
             gs := View.GridSize
 
             source := rl.Rectangle{float32(0), float32(0), float32(as.size), float32(as.size)}
-            dest := rl.Rectangle{float32(x * gs), float32(View.ScreenHeight - ((y + 1) * gs)), float32(gs), float32(gs)}
+            dest := rl.Rectangle{float32((x - View.X) * gs), float32(View.ScreenHeight - ((y - View.Y + 1) * gs)), float32(gs), float32(gs)}
 
             origin := rl.Vector2{0, 0}
             rotation := float32(0)

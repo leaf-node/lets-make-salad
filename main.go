@@ -40,6 +40,7 @@ func startLoop (world *game.World) {
     draw.Init(width, height)
 
     for !rl.WindowShouldClose() {
+        handleInput()
         game.Update(world)
         draw.Draw(world)
     }
@@ -47,3 +48,20 @@ func startLoop (world *game.World) {
     rl.CloseWindow()
 }
 
+func handleInput() {
+
+    stepSize := int32(2)
+
+    if (rl.IsKeyDown(rl.KeyDown)) {
+        draw.View.Y -= stepSize
+    }
+    if (rl.IsKeyDown(rl.KeyUp)) {
+        draw.View.Y += stepSize
+    }
+    if (rl.IsKeyDown(rl.KeyLeft)) {
+        draw.View.X -= stepSize
+    }
+    if (rl.IsKeyDown(rl.KeyRight)) {
+        draw.View.X += stepSize
+    }
+}
