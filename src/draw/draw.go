@@ -111,6 +111,20 @@ func Draw(world *game.World) {
             dest := rl.Rectangle{pixelC, pixelR, ts, ts}
 
             rl.DrawTexturePro(tex, source, dest, origin, rotation, tint)
+
+
+            item := world.Items.GetItem(x, y)
+
+            switch item {
+            case "w":
+                tex = as.wood
+            case "s":
+                tex = as.stoneBricks
+            default:
+                continue
+            }
+
+            rl.DrawTexturePro(tex, source, dest, origin, rotation, tint)
         }
     }
 
