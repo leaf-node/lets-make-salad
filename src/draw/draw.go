@@ -43,6 +43,9 @@ func Init(width int32, height int32, mapWidth int32, mapHeight int32) {
     View.ScreenHeight = height
     View.mapWidth = mapWidth
     View.mapHeight = mapHeight
+
+    View.X = mapWidth / 2
+    View.Y = mapHeight / 2
 }
 
 func Draw(world *game.World) {
