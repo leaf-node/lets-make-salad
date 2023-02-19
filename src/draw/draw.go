@@ -10,17 +10,17 @@ import (
 )
 
 var as assets
-var View viewport
+var view viewport
 
 type viewport struct {
-    X int32
-    Y int32
-    VelX int32
-    VelY int32
+    x int32
+    y int32
+    velX int32
+    velY int32
 
-    TileSize int32
-    ScreenWidth int32
-    ScreenHeight int32
+    tileSize int32
+    screenWidth int32
+    screenHeight int32
 
     mapWidth int32
     mapHeight int32
@@ -47,14 +47,14 @@ func Init(width int32, height int32, mapWidth int32, mapHeight int32) {
     as = assets{}
     as.load()
 
-    View.TileSize = 32
-    View.ScreenWidth = width
-    View.ScreenHeight = height
-    View.mapWidth = mapWidth
-    View.mapHeight = mapHeight
+    view.tileSize = 32
+    view.screenWidth = width
+    view.screenHeight = height
+    view.mapWidth = mapWidth
+    view.mapHeight = mapHeight
 
-    View.X = mapWidth * View.TileSize / 2
-    View.Y = mapHeight * View.TileSize / 2
+    view.x = mapWidth * view.tileSize / 2
+    view.y = mapHeight * view.tileSize / 2
 }
 
 func Draw(world *game.World) {
@@ -67,13 +67,13 @@ func Draw(world *game.World) {
     rl.BeginDrawing()
     rl.ClearBackground(rl.Black)
 
-    ts := float32(View.TileSize)
-    sh := float32(View.ScreenHeight)
+    ts := float32(view.tileSize)
+    sh := float32(view.screenHeight)
 
-    bottomX := View.X / View.TileSize
-    bottomY := View.Y / View.TileSize
-    topX := View.ScreenWidth / View.TileSize + bottomX
-    topY := View.ScreenHeight / View.TileSize + bottomY
+    bottomX := view.x / view.tileSize
+    bottomY := view.y / view.tileSize
+    topX := view.screenWidth / view.tileSize + bottomX
+    topY := view.screenHeight / view.tileSize + bottomY
 
     source := rl.Rectangle{float32(0), float32(0), float32(as.size), float32(as.size)}
     origin := rl.Vector2{0, 0}
@@ -101,8 +101,8 @@ func Draw(world *game.World) {
                 tex = as.dirt
             }
 
-            pixelC :=       float32(x)      * ts - float32(View.X)
-            pixelR := sh - (float32(y) + 1) * ts + float32(View.Y)
+            pixelC :=       float32(x)      * ts - float32(view.x)
+            pixelR := sh - (float32(y) + 1) * ts + float32(view.y)
 
             dest := rl.Rectangle{pixelC, pixelR, ts, ts}
 
@@ -135,65 +135,65 @@ func (as *assets) unload() {
 
 func moveViewport() {
 
-    topLimit := View.mapHeight * View.TileSize - View.ScreenHeight
-    rightLimit := View.mapWidth * View.TileSize - View.ScreenWidth
+    topLimit := view.mapHeight * view.tileSize - view.screenHeight
+    rightLimit := view.mapWidth * view.tileSize - view.screenWidth
 
-    maxVel := View.TileSize * 3
+    maxVel := view.tileSize * 3
 
-    View.VelX = util.Clamp32(View.VelX, -maxVel, maxVel)
-    View.VelY = util.Clamp32(View.VelY, -maxVel, maxVel)
+    view.velX = util.Clamp32(view.velX, -maxVel, maxVel)
+    view.velY = util.Clamp32(view.velY, -maxVel, maxVel)
 
-    if View.X <= 0 && View.VelX < 0 {
-        View.VelX = 0
-    } else if View.X >= rightLimit && View.VelX > 0 {
-        View.VelX = 0
+    if view.x <= 0 && view.velX < 0 {
+        view.velX = 0
+    } else if view.x >= rightLimit && view.velX > 0 {
+        view.velX = 0
     }
 
-    if View.Y <= 0 && View.VelY < 0 {
-        View.VelY = 0
-    } else if View.Y >= topLimit && View.VelY > 0 {
-        View.VelY = 0
+    if view.y <= 0 && view.velY < 0 {
+        view.velY = 0
+    } else if view.y >= topLimit && view.velY > 0 {
+        view.velY = 0
     }
 
-    View.X += View.VelX
-    View.Y += View.VelY
+    view.x += view.velX
+    view.y += view.velY
 
-    View.X = util.Clamp32(View.X, 0, rightLimit)
-    View.Y = util.Clamp32(View.Y, 0, topLimit)
+    view.x = util.Clamp32(view.x, 0, rightLimit)
+    view.y = util.Clamp32(view.y, 0, topLimit)
 }
 
 func AccelerateViewport(goLeft, goRight, goUp, goDown bool) {
 
     accel := int32(1)
 
-    oldSign := util.Sign32(View.VelX)
+    oldSign := util.Sign32(view.velX)
     if goLeft && ! goRight && oldSign != 1 {
-        View.VelX -= accel
+        view.velX -= accel
     } else if goRight && !goLeft && oldSign != -1 {
-        View.VelX += accel
-    } else if View.VelX != 0 {
+        view.velX += accel
+    } else if view.velX != 0 {
 
         // decelerate quickly
-        newVel := View.VelX - oldSign * 3 * accel
+        newVel := view.velX - oldSign * 3 * accel
         if util.Sign32(newVel) != oldSign {
             newVel = 0
         }
-        View.VelX = newVel
+        view.velX = newVel
     }
 
-    oldSign = util.Sign32(View.VelY)
+    oldSign = util.Sign32(view.velY)
     if goDown && !goUp && oldSign != 1 {
-        View.VelY -= accel
+        view.velY -= accel
     } else if goUp && !goDown && oldSign != -1 {
-        View.VelY += accel
-    } else if View.VelY != 0 {
+        view.velY += accel
+    } else if view.velY != 0 {
 
         // decelerate quickly
-        newVel := View.VelY - oldSign * 3 * accel
+        newVel := view.velY - oldSign * 3 * accel
         if util.Sign32(newVel) != oldSign {
             newVel = 0
         }
-        View.VelY = newVel
+        view.velY = newVel
     }
 
 }
@@ -232,9 +232,9 @@ func handleWindowResize() {
         newHeight = int32(rl.GetMonitorHeight(monitor))
     }
 
-    View.Y += View.ScreenHeight - newHeight
+    view.y += view.screenHeight - newHeight
 
-    View.ScreenWidth = newWidth
-    View.ScreenHeight = newHeight
+    view.screenWidth = newWidth
+    view.screenHeight = newHeight
 }
 
