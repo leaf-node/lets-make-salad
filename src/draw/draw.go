@@ -84,7 +84,7 @@ func Draw(world *game.World) {
     for x := bottomX ; x <= topX ; x++ {
         for y := bottomY ; y <= topY ; y++ {
 
-            tile := world.Tiles.GetTile(int(x), int(y))
+            tile := world.Tiles.GetTile(x, y)
 
             switch tile {
             case "R":

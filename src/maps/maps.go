@@ -13,19 +13,19 @@ import (
 
 type TileMap struct {
     array []byte
-    Width int
-    Height int
+    Width int32
+    Height int32
     noiseScale float64
     noise opensimplex.Noise
 }
 
 
-func newEmptyMap(width int, height int, noiseScale float64) *TileMap {
+func newEmptyMap(width int32, height int32, noiseScale float64) *TileMap {
     array := make([]byte, width * height)
     return &TileMap{array, width, height, noiseScale, nil}
 }
 
-func GenerateMap(seed string, gridSize int, noiseScale float64) *TileMap {
+func GenerateMap(seed string, gridSize int32, noiseScale float64) *TileMap {
 
     hash := sha1.Sum([]byte(seed))
     seedInt := int64(binary.BigEndian.Uint64(hash[12:]))
@@ -33,8 +33,8 @@ func GenerateMap(seed string, gridSize int, noiseScale float64) *TileMap {
     tiles := newEmptyMap(gridSize, gridSize, noiseScale)
     tiles.noise = opensimplex.New(seedInt)
 
-    for y := 0; y < tiles.Height; y++ {
-        for x := 0; x < tiles.Width; x++ {
+    for y := int32(0); y < tiles.Height; y++ {
+        for x := int32(0); x < tiles.Width; x++ {
             tiles.generateTile(x, y)
         }
     }
@@ -44,7 +44,7 @@ func GenerateMap(seed string, gridSize int, noiseScale float64) *TileMap {
 
 func (t TileMap) DebugPrintMap() {
     for y := t.Height - 1; y >= 0; y-- {
-        for x := 0; x < t.Width; x++ {
+        for x := int32(0); x < t.Width; x++ {
 
             tile := t.GetTile(x, y)
             print(tile, tile)
@@ -53,7 +53,7 @@ func (t TileMap) DebugPrintMap() {
     }
 }
 
-func (t TileMap) generateTile(x int, y int) {
+func (t TileMap) generateTile(x, y int32) {
 
     var tileStr string
 
@@ -73,18 +73,18 @@ func (t TileMap) generateTile(x int, y int) {
     t.setTile(x, y, []byte(tileStr)[0])
 }
 
-func (t TileMap) sampleNoise(x int, y int, scale float64) float64 {
+func (t TileMap) sampleNoise(x int32, y int32, scale float64) float64 {
 
     value := t.noise.Eval2(float64(x) * scale, float64(y) * scale)
     normalized := (value + 1) / 2
     return normalized
 }
 
-func (t TileMap) setTile(x int, y int, tile byte) {
+func (t TileMap) setTile(x int32, y int32, tile byte) {
     t.array[y* t.Width + x] = tile
 }
 
-func (t TileMap) GetTile(x int, y int) string {
+func (t TileMap) GetTile(x int32, y int32) string {
     if x < 0 || y < 0 || x >= t.Width || y >= t.Height {
         return " "
     }

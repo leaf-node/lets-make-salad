@@ -31,7 +31,7 @@ func main() {
         seed = "letsmakesalad"
     }
 
-    world := game.Init(seed, int(gridSize), noiseScale)
+    world := game.Init(seed, gridSize, noiseScale)
 
     startLoop(world)
 }

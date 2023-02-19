@@ -11,7 +11,7 @@ type World struct {
 }
 
 
-func Init (seed string, gridSize int, noiseScale float64) *World {
+func Init (seed string, gridSize int32, noiseScale float64) *World {
 
     tiles := maps.GenerateMap(seed, gridSize, noiseScale)
     world := &World{tiles}
