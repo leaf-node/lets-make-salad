@@ -42,7 +42,7 @@ func startLoop (world *game.World) {
 
     for !rl.WindowShouldClose() {
         input.HandleInput()
-        game.Update(world)
+        world.Update()
         draw.Draw(world)
     }
 
