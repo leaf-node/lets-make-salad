@@ -135,11 +135,12 @@ func (as *assets) unload() {
 
 func moveViewport() {
 
-    topLimit := view.mapHeight * view.tileSize - view.screenHeight
-    rightLimit := view.mapWidth * view.tileSize - view.screenWidth
+    mapPixelH := view.mapHeight * view.tileSize
+    mapPixelW := view.mapWidth * view.tileSize
+    topLimit := mapPixelH - view.screenHeight
+    rightLimit := mapPixelW - view.screenWidth
 
     maxVel := view.tileSize * 3
-
     view.velX = util.Clamp32(view.velX, -maxVel, maxVel)
     view.velY = util.Clamp32(view.velY, -maxVel, maxVel)
 
@@ -158,8 +159,17 @@ func moveViewport() {
     view.x += view.velX
     view.y += view.velY
 
-    view.x = util.Clamp32(view.x, 0, rightLimit)
-    view.y = util.Clamp32(view.y, 0, topLimit)
+    if view.screenWidth > mapPixelW {
+        view.x = -(view.screenWidth - mapPixelW) / 2
+    } else {
+        view.x = util.Clamp32(view.x, 0, rightLimit)
+    }
+
+    if view.screenHeight > mapPixelH {
+        view.y = -(view.screenHeight - mapPixelH) / 2
+    } else {
+        view.y = util.Clamp32(view.y, 0, topLimit)
+    }
 }
 
 func AccelerateViewport(goLeft, goRight, goUp, goDown bool) {
