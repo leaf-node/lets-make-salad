@@ -3,8 +3,6 @@
 package draw
 
 import (
-    "math"
-
     "github.com/gen2brain/raylib-go/raylib"
 
     "github.com/leaf-node/lets-make-salad/src/game"
@@ -15,10 +13,10 @@ var as assets
 var View viewport
 
 type viewport struct {
-    X float32
-    Y float32
-    VelX float32
-    VelY float32
+    X int32
+    Y int32
+    VelX int32
+    VelY int32
 
     TileSize int32
     ScreenWidth int32
@@ -55,8 +53,8 @@ func Init(width int32, height int32, mapWidth int32, mapHeight int32) {
     View.mapWidth = mapWidth
     View.mapHeight = mapHeight
 
-    View.X = float32(mapWidth) / 2
-    View.Y = float32(mapHeight) / 2
+    View.X = mapWidth * View.TileSize / 2
+    View.Y = mapHeight * View.TileSize / 2
 }
 
 func Draw(world *game.World) {
@@ -70,15 +68,17 @@ func Draw(world *game.World) {
     rl.ClearBackground(rl.Black)
 
     ts := float32(View.TileSize)
+    sh := float32(View.ScreenHeight)
 
-    bottomX := int32(math.Floor(float64(View.X)))
-    bottomY := int32(math.Floor(float64(View.Y)))
-    topX := View.ScreenWidth / View.TileSize + bottomX + 1
-    topY := View.ScreenHeight / View.TileSize + bottomY + 1
+    bottomX := View.X / View.TileSize
+    bottomY := View.Y / View.TileSize
+    topX := View.ScreenWidth / View.TileSize + bottomX
+    topY := View.ScreenHeight / View.TileSize + bottomY
 
     source := rl.Rectangle{float32(0), float32(0), float32(as.size), float32(as.size)}
     origin := rl.Vector2{0, 0}
     rotation := float32(0)
+
     var tex rl.Texture2D
 
     for x := bottomX ; x <= topX ; x++ {
@@ -101,10 +101,10 @@ func Draw(world *game.World) {
                 tex = as.dirt
             }
 
-            xf := float32(x)
-            yf := float32(y)
+            pixelC :=       float32(x)      * ts - float32(View.X)
+            pixelR := sh - (float32(y) + 1) * ts + float32(View.Y)
 
-            dest := rl.Rectangle{((xf - View.X) * ts), (float32(View.ScreenHeight) - (yf - View.Y + 1) * ts), ts, ts}
+            dest := rl.Rectangle{pixelC, pixelR, ts, ts}
 
             rl.DrawTexturePro(tex, source, dest, origin, rotation, tint)
         }
@@ -135,64 +135,67 @@ func (as *assets) unload() {
 
 func moveViewport() {
 
-    topmost := float32(View.mapHeight) - float32(View.ScreenHeight) / float32(View.TileSize)
-    rightmost := float32(View.mapWidth) - float32(View.ScreenWidth) / float32(View.TileSize)
+    topLimit := View.mapHeight * View.TileSize - View.ScreenHeight
+    rightLimit := View.mapWidth * View.TileSize - View.ScreenWidth
 
-    View.VelX = util.ClampF32(View.VelX, -3, 3)
-    View.VelY = util.ClampF32(View.VelY, -3, 3)
+    maxVel := View.TileSize * 3
+
+    View.VelX = util.Clamp32(View.VelX, -maxVel, maxVel)
+    View.VelY = util.Clamp32(View.VelY, -maxVel, maxVel)
 
     if View.X <= 0 && View.VelX < 0 {
         View.VelX = 0
-    } else if View.X >= rightmost && View.VelX > 0 {
+    } else if View.X >= rightLimit && View.VelX > 0 {
         View.VelX = 0
     }
 
     if View.Y <= 0 && View.VelY < 0 {
         View.VelY = 0
-    } else if View.Y >= topmost && View.VelY > 0 {
+    } else if View.Y >= topLimit && View.VelY > 0 {
         View.VelY = 0
     }
 
     View.X += View.VelX
     View.Y += View.VelY
 
-    View.X = util.ClampF32(View.X, 0, rightmost)
-    View.Y = util.ClampF32(View.Y, 0, topmost)
+    View.X = util.Clamp32(View.X, 0, rightLimit)
+    View.Y = util.Clamp32(View.Y, 0, topLimit)
 }
 
 func AccelerateViewport(goLeft, goRight, goUp, goDown bool) {
 
-    accel := float32(0.03)
+    accel := int32(1)
 
-    if goLeft && ! goRight && util.Sign(View.VelX) != 1 {
+    oldSign := util.Sign32(View.VelX)
+    if goLeft && ! goRight && oldSign != 1 {
         View.VelX -= accel
-    } else if goRight && !goLeft && util.Sign(View.VelX) != -1 {
+    } else if goRight && !goLeft && oldSign != -1 {
         View.VelX += accel
     } else if View.VelX != 0 {
 
         // decelerate quickly
-        oldSign := util.Sign(View.VelX)
         newVel := View.VelX - oldSign * 3 * accel
-        if util.Sign(newVel) != oldSign {
+        if util.Sign32(newVel) != oldSign {
             newVel = 0
         }
         View.VelX = newVel
     }
 
-    if goDown && !goUp && util.Sign(View.VelY) != 1 {
+    oldSign = util.Sign32(View.VelY)
+    if goDown && !goUp && oldSign != 1 {
         View.VelY -= accel
-    } else if goUp && !goDown && util.Sign(View.VelY) != -1 {
+    } else if goUp && !goDown && oldSign != -1 {
         View.VelY += accel
     } else if View.VelY != 0 {
 
         // decelerate quickly
-        oldSign := util.Sign(View.VelY)
         newVel := View.VelY - oldSign * 3 * accel
-        if util.Sign(newVel) != oldSign {
+        if util.Sign32(newVel) != oldSign {
             newVel = 0
         }
         View.VelY = newVel
     }
+
 }
 
 func ResizeWindow(fullscreen bool, maximized bool) {
@@ -229,7 +232,7 @@ func handleWindowResize() {
         newHeight = int32(rl.GetMonitorHeight(monitor))
     }
 
-    View.Y += float32(View.ScreenHeight - newHeight) / float32(View.TileSize)
+    View.Y += View.ScreenHeight - newHeight
 
     View.ScreenWidth = newWidth
     View.ScreenHeight = newHeight

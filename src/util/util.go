@@ -1,6 +1,6 @@
 package util
 
-func ClampF32(value, min, max float32) float32 {
+func Clamp32(value, min, max int32) int32 {
     if value < min {
         return min
     } else if value > max {
@@ -10,7 +10,7 @@ func ClampF32(value, min, max float32) float32 {
     }
 }
 
-func Sign(value float32) float32 {
+func Sign32(value int32) int32 {
     if value > 0 {
         return 1
     } else if value < 0 {
