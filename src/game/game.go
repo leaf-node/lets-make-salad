@@ -3,6 +3,8 @@
 package game
 
 import (
+    "math/rand"
+
     "github.com/leaf-node/lets-make-salad/src/maps"
     "github.com/leaf-node/lets-make-salad/src/items"
 )
@@ -24,6 +26,16 @@ func Init (seed string, gridSize int32, noiseScale float64) *World {
 }
 
 func (world *World) Update() {
+
+    x := int32(rand.Intn(int(world.Tiles.Width)))
+    y := int32(rand.Intn(int(world.Tiles.Height)))
+
+    switch world.Tiles.GetTile(x, y) {
+    case ".":
+        if world.Items.GetItem(x, y) == "" {
+            world.Items.AddItem("w", x, y)
+        }
+    }
 
     // todo
 
