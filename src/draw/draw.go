@@ -161,19 +161,19 @@ func accelerateViewport() {
 
     accel := float32(0.03)
 
-    goleft := false
-    goright := false
-    goup := false
-    godown := false
+    goLeft := false
+    goRight := false
+    goUp := false
+    goDown := false
 
-    if rl.IsKeyDown(rl.KeyLeft)  { goleft = true }
-    if rl.IsKeyDown(rl.KeyRight) { goright = true }
-    if rl.IsKeyDown(rl.KeyUp)    { goup = true }
-    if rl.IsKeyDown(rl.KeyDown)  { godown = true }
+    if rl.IsKeyDown(rl.KeyLeft)  { goLeft = true }
+    if rl.IsKeyDown(rl.KeyRight) { goRight = true }
+    if rl.IsKeyDown(rl.KeyUp)    { goUp = true }
+    if rl.IsKeyDown(rl.KeyDown)  { goDown = true }
 
-    if goleft && ! goright {
+    if goLeft && ! goRight {
         View.VelX -= accel
-    } else if goright && !goleft {
+    } else if goRight && !goLeft {
         View.VelX += accel
     } else {
 
@@ -185,9 +185,9 @@ func accelerateViewport() {
         View.VelX = newVel
     }
 
-    if godown && !goup {
+    if goDown && !goUp {
         View.VelY -= accel
-    } else if goup && !godown {
+    } else if goUp && !goDown {
         View.VelY += accel
     } else {
 
