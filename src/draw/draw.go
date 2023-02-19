@@ -59,6 +59,7 @@ func Init(width int32, height int32, mapWidth int32, mapHeight int32) {
 
 func Draw(world *game.World) {
 
+    accelerateViewport()
     moveViewport()
 
     tint := rl.White
@@ -154,4 +155,47 @@ func moveViewport() {
 
     View.X = util.ClampF32(View.X, 0, rightmost)
     View.Y = util.ClampF32(View.Y, 0, topmost)
+}
+
+func accelerateViewport() {
+
+    accel := float32(0.03)
+
+    goleft := false
+    goright := false
+    goup := false
+    godown := false
+
+    if rl.IsKeyDown(rl.KeyLeft)  { goleft = true }
+    if rl.IsKeyDown(rl.KeyRight) { goright = true }
+    if rl.IsKeyDown(rl.KeyUp)    { goup = true }
+    if rl.IsKeyDown(rl.KeyDown)  { godown = true }
+
+    if goleft && ! goright {
+        View.VelX -= accel
+    } else if goright && !goleft {
+        View.VelX += accel
+    } else {
+
+        oldSign := util.Sign(View.VelX)
+        newVel := View.VelX - oldSign * 3 * accel
+        if util.Sign(newVel) != oldSign {
+            newVel = 0
+        }
+        View.VelX = newVel
+    }
+
+    if godown && !goup {
+        View.VelY -= accel
+    } else if goup && !godown {
+        View.VelY += accel
+    } else {
+
+        oldSign := util.Sign(View.VelY)
+        newVel := View.VelY - oldSign * 3 * accel
+        if util.Sign(newVel) != oldSign {
+            newVel = 0
+        }
+        View.VelY = newVel
+    }
 }
