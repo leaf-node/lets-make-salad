@@ -71,11 +71,16 @@ func Draw(world *game.World) {
 
     bottomX := int32(math.Floor(float64(View.X)))
     bottomY := int32(math.Floor(float64(View.Y)))
+    topX := View.ScreenWidth / View.TileSize + bottomX
+    topY := View.ScreenHeight / View.TileSize + bottomY
 
-    for x := bottomX ; x <= View.ScreenWidth / View.TileSize + bottomX ; x++ {
-        for y := bottomY ; y <= View.ScreenHeight / View.TileSize + bottomY ; y++ {
+    source := rl.Rectangle{float32(0), float32(0), float32(as.size), float32(as.size)}
+    origin := rl.Vector2{0, 0}
+    rotation := float32(0)
+    var tex rl.Texture2D
 
-            var tex rl.Texture2D
+    for x := bottomX ; x <= topX ; x++ {
+        for y := bottomY ; y <= topY ; y++ {
 
             tile := world.Tiles.GetTile(int(x), int(y))
 
@@ -97,11 +102,7 @@ func Draw(world *game.World) {
             xf := float32(x)
             yf := float32(y)
 
-            source := rl.Rectangle{float32(0), float32(0), float32(as.size), float32(as.size)}
             dest := rl.Rectangle{((xf - View.X) * ts), (float32(View.ScreenHeight) - (yf - View.Y + 1) * ts), ts, ts}
-
-            origin := rl.Vector2{0, 0}
-            rotation := float32(0)
 
             rl.DrawTexturePro(tex, source, dest, origin, rotation, tint)
         }
