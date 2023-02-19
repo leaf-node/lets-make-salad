@@ -216,16 +216,22 @@ func ResizeWindow(fullscreen bool, maximized bool) {
 
 func handleWindowResize() {
 
-    if rl.IsWindowResized() {
+    var newWidth int32
+    var newHeight int32
 
-        View.ScreenWidth = int32(rl.GetScreenWidth())
-        View.ScreenHeight = int32(rl.GetScreenHeight())
+    if !rl.IsWindowFullscreen() {
+        newWidth = int32(rl.GetScreenWidth())
+        newHeight = int32(rl.GetScreenHeight())
 
-    } else if rl.IsWindowFullscreen() {
-
+    } else {
         monitor := rl.GetCurrentMonitor()
-        View.ScreenWidth = int32(rl.GetMonitorWidth(monitor))
-        View.ScreenHeight = int32(rl.GetMonitorHeight(monitor))
+        newWidth = int32(rl.GetMonitorWidth(monitor))
+        newHeight = int32(rl.GetMonitorHeight(monitor))
     }
+
+    View.Y += float32(View.ScreenHeight - newHeight) / float32(View.TileSize)
+
+    View.ScreenWidth = newWidth
+    View.ScreenHeight = newHeight
 }
 
