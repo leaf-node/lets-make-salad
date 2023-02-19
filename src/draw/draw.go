@@ -3,20 +3,27 @@
 package draw
 
 import (
+    "math"
+
     "github.com/gen2brain/raylib-go/raylib"
 
     "github.com/leaf-node/lets-make-salad/src/game"
+    "github.com/leaf-node/lets-make-salad/src/util"
 )
 
 var as assets
 var View viewport
 
 type viewport struct {
-    X int32
-    Y int32
+    X float32
+    Y float32
+    VelX float32
+    VelY float32
+
     TileSize int32
     ScreenWidth int32
     ScreenHeight int32
+
     mapWidth int32
     mapHeight int32
 }
@@ -46,21 +53,26 @@ func Init(width int32, height int32, mapWidth int32, mapHeight int32) {
     View.mapWidth = mapWidth
     View.mapHeight = mapHeight
 
-    View.X = mapWidth / 2
-    View.Y = mapHeight / 2
+    View.X = float32(mapWidth) / 2
+    View.Y = float32(mapHeight) / 2
 }
 
 func Draw(world *game.World) {
 
-    clampViewport()
+    moveViewport()
 
     tint := rl.White
 
     rl.BeginDrawing()
     rl.ClearBackground(rl.Black)
 
-    for x := View.X ; x <= View.ScreenWidth / View.TileSize + View.X ; x++ {
-        for y := View.Y ; y <= View.ScreenHeight / View.TileSize + View.Y ; y++ {
+    ts := float32(View.TileSize)
+
+    bottomX := int32(math.Floor(float64(View.X)))
+    bottomY := int32(math.Floor(float64(View.Y)))
+
+    for x := bottomX ; x <= View.ScreenWidth / View.TileSize + bottomX ; x++ {
+        for y := bottomY ; y <= View.ScreenHeight / View.TileSize + bottomY ; y++ {
 
             var tex rl.Texture2D
 
@@ -81,10 +93,11 @@ func Draw(world *game.World) {
                 tex = as.dirt
             }
 
-            gs := View.TileSize
+            xf := float32(x)
+            yf := float32(y)
 
             source := rl.Rectangle{float32(0), float32(0), float32(as.size), float32(as.size)}
-            dest := rl.Rectangle{float32((x - View.X) * gs), float32(View.ScreenHeight - ((y - View.Y + 1) * gs)), float32(gs), float32(gs)}
+            dest := rl.Rectangle{((xf - View.X) * ts), (float32(View.ScreenHeight) - (yf - View.Y + 1) * ts), ts, ts}
 
             origin := rl.Vector2{0, 0}
             rotation := float32(0)
@@ -116,14 +129,29 @@ func (as *assets) unload() {
     rl.UnloadTexture(as.dirt)
 }
 
-func clampViewport() {
+func moveViewport() {
 
-    topmostPos := View.mapHeight - View.ScreenHeight / View.TileSize
-    rightmostPos := View.mapWidth - View.ScreenWidth / View.TileSize
+    topmost := float32(View.mapHeight) - float32(View.ScreenHeight) / float32(View.TileSize)
+    rightmost := float32(View.mapWidth) - float32(View.ScreenWidth) / float32(View.TileSize)
 
-    if View.X < 0 { View.X = 0 }
-    if View.Y < 0 { View.Y = 0 }
+    View.VelX = util.ClampF32(View.VelX, -3, 3)
+    View.VelY = util.ClampF32(View.VelY, -3, 3)
 
-    if View.X > rightmostPos { View.X = rightmostPos }
-    if View.Y > topmostPos { View.Y = topmostPos }
+    if View.X <= 0 && View.VelX < 0 {
+        View.VelX = 0
+    } else if View.X >= rightmost && View.VelX > 0 {
+        View.VelX = 0
+    }
+
+    if View.Y <= 0 && View.VelY < 0 {
+        View.VelY = 0
+    } else if View.Y >= topmost && View.VelY > 0 {
+        View.VelY = 0
+    }
+
+    View.X += View.VelX
+    View.Y += View.VelY
+
+    View.X = util.ClampF32(View.X, 0, rightmost)
+    View.Y = util.ClampF32(View.Y, 0, topmost)
 }

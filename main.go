@@ -10,6 +10,7 @@ import (
 
     "github.com/leaf-node/lets-make-salad/src/game"
     "github.com/leaf-node/lets-make-salad/src/draw"
+    "github.com/leaf-node/lets-make-salad/src/util"
 )
 
 var gridSize = int32(250)
@@ -50,18 +51,43 @@ func startLoop (world *game.World) {
 
 func handleInput() {
 
-    stepSize := int32(2)
+    accel := float32(0.03)
 
-    if (rl.IsKeyDown(rl.KeyDown)) {
-        draw.View.Y -= stepSize
+    goleft := false
+    goright := false
+    goup := false
+    godown := false
+
+    if rl.IsKeyDown(rl.KeyLeft)  { goleft = true }
+    if rl.IsKeyDown(rl.KeyRight) { goright = true }
+    if rl.IsKeyDown(rl.KeyUp)    { goup = true }
+    if rl.IsKeyDown(rl.KeyDown)  { godown = true }
+
+    if goleft && ! goright {
+        draw.View.VelX -= accel
+    } else if goright && !goleft {
+        draw.View.VelX += accel
+    } else {
+
+        oldSign := util.Sign(draw.View.VelX)
+        newVel := draw.View.VelX - oldSign * 3 * accel
+        if util.Sign(newVel) != oldSign {
+            newVel = 0
+        }
+        draw.View.VelX = newVel
     }
-    if (rl.IsKeyDown(rl.KeyUp)) {
-        draw.View.Y += stepSize
-    }
-    if (rl.IsKeyDown(rl.KeyLeft)) {
-        draw.View.X -= stepSize
-    }
-    if (rl.IsKeyDown(rl.KeyRight)) {
-        draw.View.X += stepSize
+
+    if godown && !goup {
+        draw.View.VelY -= accel
+    } else if goup && !godown {
+        draw.View.VelY += accel
+    } else {
+
+        oldSign := util.Sign(draw.View.VelY)
+        newVel := draw.View.VelY - oldSign * 3 * accel
+        if util.Sign(newVel) != oldSign {
+            newVel = 0
+        }
+        draw.View.VelY = newVel
     }
 }
