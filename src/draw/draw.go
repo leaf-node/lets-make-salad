@@ -71,8 +71,8 @@ func Draw(world *game.World) {
 
     bottomX := view.x / view.tileSize
     bottomY := view.y / view.tileSize
-    topX := view.screenWidth / view.tileSize + bottomX
-    topY := view.screenHeight / view.tileSize + bottomY
+    topX := view.screenWidth / view.tileSize + bottomX + 1
+    topY := view.screenHeight / view.tileSize + bottomY + 1
 
     source := rl.Rectangle{float32(0), float32(0), float32(as.size), float32(as.size)}
     origin := rl.Vector2{0, 0}
