@@ -116,13 +116,36 @@ func Draw(world *game.World) {
             case "s":
                 texName = "stoneBricks"
             case "":
-                continue
+                texName = "NONE"
             default:
                 texName = "unknownItem"
             }
 
+            if texName != "NONE" {
+                if _, ok := textures[texName] ; !ok {
+                    texName = "unknownItem"
+                }
+                tex = textures[texName]
+
+                rl.DrawTexturePro(tex.tex, source, dest, origin, rotation, tint)
+            }
+
+
+            being := world.Beings.GetBeing(x, y)
+
+            switch being.Species {
+            case "dwarf":
+                texName = "dwarf"
+            case "hobbit":
+                texName = "hobbit"
+            case "":
+                continue
+            default:
+                texName = "unknownBeing"
+            }
+
             if _, ok := textures[texName] ; !ok {
-                texName = "unknownItem"
+                texName = "unknownBeing"
             }
             tex = textures[texName]
 

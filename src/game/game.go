@@ -7,10 +7,12 @@ import (
 
     "github.com/leaf-node/lets-make-salad/src/maps"
     "github.com/leaf-node/lets-make-salad/src/items"
+    "github.com/leaf-node/lets-make-salad/src/beings"
 )
 
 type World struct {
     Tiles *maps.TileMap
+    Beings beings.BeingsMap
     Items items.ItemsMap
 }
 
@@ -18,9 +20,10 @@ type World struct {
 func Init (seed string, gridSize int32, noiseScale float64) *World {
 
     tiles := maps.GenerateMap(seed, gridSize, noiseScale)
+    beings := beings.Init()
     items := items.New()
 
-    world := &World{tiles, items}
+    world := &World{tiles, beings, items}
 
     return world
 }
