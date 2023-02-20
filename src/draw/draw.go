@@ -3,6 +3,12 @@
 package draw
 
 import (
+    "log"
+    "fmt"
+    "strings"
+    "path/filepath"
+    "io/ioutil"
+
     "github.com/gen2brain/raylib-go/raylib"
 
     "github.com/leaf-node/lets-make-salad/src/game"
@@ -10,20 +16,15 @@ import (
 
 // 'view' global and 'viewport' type are declared in viewport.go
 
-
-
-
-type assets struct {
+type texture struct {
+    tex rl.Texture2D
     size int32
-    rock rl.Texture2D
-    stones rl.Texture2D
-    grass rl.Texture2D
-    swamp rl.Texture2D
-    dirt rl.Texture2D
-    tree rl.Texture2D
-    wood rl.Texture2D
-    stoneBricks rl.Texture2D
 }
+
+type textureMap map[string]texture
+
+var textures textureMap
+
 
 func Init(width int32, height int32, mapWidth int32, mapHeight int32) {
 
@@ -34,8 +35,8 @@ func Init(width int32, height int32, mapWidth int32, mapHeight int32) {
 
     rl.SetWindowState(rl.FlagWindowResizable)
 
-    as = assets{}
-    as.load()
+    textures = textureMap{}
+    textures.load()
 
     view.tileSize = 32
     view.screenWidth = width
@@ -65,11 +66,11 @@ func Draw(world *game.World) {
     topX := view.screenWidth / view.tileSize + bottomX + 1
     topY := view.screenHeight / view.tileSize + bottomY + 1
 
-    source := rl.Rectangle{float32(0), float32(0), float32(as.size), float32(as.size)}
     origin := rl.Vector2{0, 0}
     rotation := float32(0)
 
-    var tex rl.Texture2D
+    var tex texture
+    var texName string
 
     for x := bottomX ; x <= topX ; x++ {
         for y := bottomY ; y <= topY ; y++ {
@@ -78,70 +79,92 @@ func Draw(world *game.World) {
 
             switch tile {
             case "R":
-                tex = as.rock
+                texName = "rock"
             case "r":
-                tex = as.stones
+                texName = "stones"
             case ".":
-                tex = as.grass
+                texName = "grass"
             case "T":
-                tex = as.tree
+                texName = "tree"
             case ":":
-                tex = as.swamp
+                texName = "swamp"
             case " ":
                 continue
             default:
-                tex = as.dirt
+                texName = "unknownTile"
             }
+
+            if _, ok := textures[texName] ; !ok {
+                texName = "unknownTile"
+            }
+            tex = textures[texName]
 
             pixelC :=       float32(x)      * ts - float32(view.x)
             pixelR := sh - (float32(y) + 1) * ts + float32(view.y)
 
-            dest := rl.Rectangle{pixelC, pixelR, ts, ts}
+            dest   := rl.Rectangle{pixelC, pixelR, ts, ts}
+            source := rl.Rectangle{float32(0), float32(0), float32(tex.size), float32(tex.size)}
 
-            rl.DrawTexturePro(tex, source, dest, origin, rotation, tint)
+            rl.DrawTexturePro(tex.tex, source, dest, origin, rotation, tint)
 
 
             item := world.Items.GetItem(x, y)
 
             switch item {
             case "w":
-                tex = as.wood
+                texName = "wood"
             case "s":
-                tex = as.stoneBricks
-            default:
+                texName = "stoneBricks"
+            case "":
                 continue
+            default:
+                texName = "unknownItem"
             }
 
-            rl.DrawTexturePro(tex, source, dest, origin, rotation, tint)
+            if _, ok := textures[texName] ; !ok {
+                texName = "unknownItem"
+            }
+            tex = textures[texName]
+
+            rl.DrawTexturePro(tex.tex, source, dest, origin, rotation, tint)
         }
     }
 
     rl.EndDrawing()
 }
 
-func (as *assets) load() {
+func (t textureMap) load() {
 
-    as.size = 16
+    spritesDir := "img/16x16/"
 
-    as.rock = rl.LoadTexture("img/rock.png")
-    as.stones = rl.LoadTexture("img/stones.png")
-    as.grass = rl.LoadTexture("img/grass.png")
-    as.swamp = rl.LoadTexture("img/swamp.png")
-    as.dirt = rl.LoadTexture("img/dirt.png")
-    as.tree = rl.LoadTexture("img/tree.png")
-    as.wood = rl.LoadTexture("img/wood.png")
-    as.stoneBricks = rl.LoadTexture("img/stoneBricks.png")
+    files, err := ioutil.ReadDir(spritesDir)
+    if err != nil {
+        log.Fatal(err)
+    }
+
+    for _, file := range files {
+        name := file.Name()
+
+        fullPath := fmt.Sprintf("%s%s", spritesDir, name)
+        shortName := strings.TrimSuffix(name, filepath.Ext(name))
+
+        tex := rl.LoadTexture(fullPath)
+        t[shortName] = texture{tex, 16}
+    }
+
+    if _, ok := t["unknownTile"] ; !ok  {
+        log.Fatal("Missing 'unknownTile.png' image")
+    }
+    if _, ok := t["unknownItem"] ; !ok  {
+        log.Fatal("Missing 'unknownItem.png' image")
+    }
 }
 
-func (as *assets) unload() {
+func (t textureMap) unload() {
 
-    rl.UnloadTexture(as.rock)
-    rl.UnloadTexture(as.stones)
-    rl.UnloadTexture(as.grass)
-    rl.UnloadTexture(as.swamp)
-    rl.UnloadTexture(as.dirt)
-    rl.UnloadTexture(as.tree)
-    rl.UnloadTexture(as.wood)
-    rl.UnloadTexture(as.stoneBricks)
+    for name, _ := range t {
+        rl.UnloadTexture(t[name].tex)
+        delete(t, name)
+    }
 }
 
