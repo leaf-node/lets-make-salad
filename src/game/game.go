@@ -41,11 +41,26 @@ func (world *World) Update() {
         item = "s"
     }
 
-    switch world.Tiles.GetTile(x, y) {
-    case ".":
+    if world.Tiles.GetTile(x, y) == "." {
         if world.Items.GetItem(x, y) == "" {
             world.Items.AddItem(item, x, y)
         }
+    }
+
+
+    var species string
+
+    x = int32(rand.Intn(int(world.Tiles.Width)))
+    y = int32(rand.Intn(int(world.Tiles.Height)))
+
+    if rand.Intn(2) == 1 {
+        species = "dwarf"
+    } else {
+        species = "hobbit"
+    }
+
+    if world.Tiles.GetTile(x, y) == "." {
+        world.Beings.AddBeing(x, y, "Jo", species, "other")
     }
 
     // todo
