@@ -38,5 +38,12 @@ func HandleInput () {
             draw.ResizeWindow(false, false)
         }
     }
+
+    if rl.IsKeyPressed(rl.KeyMinus) {
+        draw.Zoom("out")
+    }
+    if rl.IsKeyPressed(rl.KeyEqual) {
+        draw.Zoom("in")
+    }
 }
 

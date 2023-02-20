@@ -3,10 +3,16 @@
 package draw
 
 import (
+    "log"
+    "fmt"
+
     "github.com/gen2brain/raylib-go/raylib"
 
     "github.com/leaf-node/lets-make-salad/src/util"
 )
+
+
+var tileSizes []int32
 
 var view viewport
 
@@ -26,7 +32,9 @@ type viewport struct {
 
 func initView(width, height, mapWidth, mapHeight int32) {
 
-    view.tileSize = 32
+    tileSizes = []int32{8, 12, 16, 24, 32, 58, 64}
+
+    view.tileSize = tileSizes[4]
 
     view.screenWidth = width
     view.screenHeight = height
@@ -150,5 +158,45 @@ func handleWindowResize() {
 
     view.screenWidth = newWidth
     view.screenHeight = newHeight
+}
+
+func Zoom(direction string) bool {
+
+    var delta int
+
+    switch direction {
+    case "in":
+        delta = 1
+    case "out":
+        delta = -1
+    default:
+        log.Fatal(fmt.Sprintf("invalid zoom direction: %s", direction))
+    }
+
+    oldTS := view.tileSize
+    newTSi := -2
+    for i, v := range tileSizes {
+        if v >= oldTS {
+            newTSi = i + delta
+            break
+        }
+    }
+    if newTSi == -2 { newTSi = len(tileSizes) - 1 }
+
+    if newTSi < 0 || newTSi >= len(tileSizes) {
+        return false
+
+    } else {
+        newTS := tileSizes[newTSi]
+        view.tileSize = newTS
+
+        tileXcenter := float32(view.x + view.screenWidth  / 2) / float32(oldTS)
+        tileYcenter := float32(view.y + view.screenHeight / 2) / float32(oldTS)
+
+        view.x = int32(tileXcenter) * newTS - view.screenWidth  / 2
+        view.y = int32(tileYcenter) * newTS - view.screenHeight / 2
+
+        return true
+    }
 }
 
