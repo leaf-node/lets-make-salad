@@ -15,9 +15,15 @@ func New() ItemsMap {
     return make(ItemsMap)
 }
 
-func (i ItemsMap) AddItem(item string, x int32, y int32) {
+// add item, return false if it could not be added
+func (i ItemsMap) AddItem(item string, x int32, y int32) bool {
 
+    if i.GetItem(x, y) != "" {
+        return false
+    }
     i[coord{x, y}] = item
+
+    return true
 }
 
 func (i ItemsMap) GetItem(x int32, y int32) string {

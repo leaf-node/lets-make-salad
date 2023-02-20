@@ -28,6 +28,7 @@ func Init() BeingsMap {
     return beings
 }
 
+// add being, return false if it could not be added
 func (b BeingsMap) AddBeing(x int32, y int32, name string, species string, gender string) bool {
 
     if species != "dwarf" && species != "hobbit" {
