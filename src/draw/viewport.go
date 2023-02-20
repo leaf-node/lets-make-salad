@@ -8,6 +8,22 @@ import (
     "github.com/leaf-node/lets-make-salad/src/util"
 )
 
+var view viewport
+
+type viewport struct {
+    x int32
+    y int32
+    velX int32
+    velY int32
+
+    tileSize int32
+    screenWidth int32
+    screenHeight int32
+
+    mapWidth int32
+    mapHeight int32
+}
+
 
 func moveViewport() {
 

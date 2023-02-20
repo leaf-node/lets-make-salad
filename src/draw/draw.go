@@ -8,22 +8,10 @@ import (
     "github.com/leaf-node/lets-make-salad/src/game"
 )
 
-var as assets
-var view viewport
+// 'view' global and 'viewport' type are declared in viewport.go
 
-type viewport struct {
-    x int32
-    y int32
-    velX int32
-    velY int32
 
-    tileSize int32
-    screenWidth int32
-    screenHeight int32
 
-    mapWidth int32
-    mapHeight int32
-}
 
 type assets struct {
     size int32
