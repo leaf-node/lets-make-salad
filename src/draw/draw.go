@@ -38,14 +38,7 @@ func Init(width int32, height int32, mapWidth int32, mapHeight int32) {
     textures = textureMap{}
     textures.load()
 
-    view.tileSize = 32
-    view.screenWidth = width
-    view.screenHeight = height
-    view.mapWidth = mapWidth
-    view.mapHeight = mapHeight
-
-    view.x = mapWidth * view.tileSize / 2
-    view.y = mapHeight * view.tileSize / 2
+    initView(width, height, mapWidth, mapHeight)
 }
 
 func Draw(world *game.World) {
