@@ -32,7 +32,7 @@ type viewport struct {
 
 func initView(width, height, mapWidth, mapHeight int32) {
 
-    tileSizes = []int32{8, 12, 16, 24, 32, 58, 64}
+    tileSizes = []int32{8, 12, 16, 24, 32, 58, 64, 128, 256}
 
     view.tileSize = tileSizes[4]
 
