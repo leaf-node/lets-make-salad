@@ -1,3 +1,10 @@
+
+// SPDX-FileCopyrightText: 2023 Andrew Engelbrecht <andrew@sourceflow.dev>
+//
+// SPDX-License-Identifier: MIT
+//
+// utilities - this is a part of lets-make-salad
+
 package util
 
 func Clamp32(value, min, max int32) int32 {

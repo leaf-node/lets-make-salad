@@ -1,4 +1,9 @@
-// map generator
+
+// SPDX-FileCopyrightText: 2023 Andrew Engelbrecht <andrew@sourceflow.dev>
+//
+// SPDX-License-Identifier: MIT
+//
+// map generator - this is a part of lets-make-salad
 
 package maps
 

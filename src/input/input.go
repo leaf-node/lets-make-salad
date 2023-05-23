@@ -1,4 +1,9 @@
-// input handling
+
+// SPDX-FileCopyrightText: 2023 Andrew Engelbrecht <andrew@sourceflow.dev>
+//
+// SPDX-License-Identifier: MIT
+//
+// input handling - this is a part of lets-make-salad
 
 package input
 

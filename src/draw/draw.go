@@ -1,4 +1,9 @@
-// draw scenes
+
+// SPDX-FileCopyrightText: 2023 Andrew Engelbrecht <andrew@sourceflow.dev>
+//
+// SPDX-License-Identifier: MIT
+//
+// draw scenes - this is a part of lets-make-salad
 
 package draw
 

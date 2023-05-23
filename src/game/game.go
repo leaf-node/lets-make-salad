@@ -1,4 +1,9 @@
-// game logic
+
+// SPDX-FileCopyrightText: 2023 Andrew Engelbrecht <andrew@sourceflow.dev>
+//
+// SPDX-License-Identifier: MIT
+//
+// game logic - this is a part of lets-make-salad
 
 package game
 
