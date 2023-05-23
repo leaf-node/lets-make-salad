@@ -1,0 +1,47 @@
+# Let's Make Salad!
+
+This was a short-lived project in which I started creating a game written in
+Golang with raylib. The game / demo procedurally generates a map (based on a
+seed), and then beings and items get randly added to it. You can zoom around
+the map, or make it full screen.
+
+![A low resolution map of a forested and rocky land. Several people appear on
+the map.](https://github.com/leaf-node/lets-make-salad/blob/main/screenshot.png?raw=true)
+
+The original idea was to make a peaceful and relaxing colony simulator in which
+all of the food is vegan.
+
+## How to run the demo / game
+
+```
+git clone https://github.com/leaf-node/lest-make-salad
+cd lets-make-salad
+
+go run .
+```
+
+or with a seed string of your choosing:
+
+```
+go run . any-seed-string
+```
+
+The raylib depdendency comes with C code, so it may take a few minutes to
+compile the very first time.
+
+## Controls
+
+`f` for full screen, `m` for maximized window, arrow keys for moving the view
+of the map, `+` to zoom in, `-` to zoom out, `esc` to quit
+
+## About the code
+
+The map is created by multiplying two different freqencies of two-dimensional
+OpenSimplex noise together. Land features are determined by the height /
+amplituide of each square.
+
+## License
+
+This software is under the MIT license. The images are under the Creative
+Commons CC0 license, or the MIT license, whichever you prefer to use.
+
