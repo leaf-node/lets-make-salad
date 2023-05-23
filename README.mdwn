@@ -5,11 +5,11 @@ Golang with raylib. The game / demo procedurally generates a map (based on a
 seed), and then beings and items get randly added to it. You can zoom around
 the map, or make it full screen.
 
-![A low resolution map of a forested and rocky land. Several people appear on
-the map.](https://github.com/leaf-node/lets-make-salad/blob/main/screenshot.png?raw=true)
-
 The original idea was to make a peaceful and relaxing colony simulator in which
 all of the food is vegan.
+
+![A low resolution map of a forested and rocky land. Several people appear on
+the map.](https://github.com/leaf-node/lets-make-salad/blob/main/screenshot.png?raw=true)
 
 ## How to run the demo / game
 
